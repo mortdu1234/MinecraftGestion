@@ -64,6 +64,15 @@ class Config:
     tmp_dir: str
     log_level: str
 
+    autostop_enabled: bool
+    autostop_empty_hours: int
+    autostop_check_minutes: int
+    autostop_include: list[str]
+    autostop_exclude: list[str]
+    autostop_host: str
+    autostop_dry_run: bool
+    autostop_state_file: str
+
 
 def load() -> Config:
     mb = 1024 * 1024
@@ -90,4 +99,12 @@ def load() -> Config:
         folder_include_id=_bool("FOLDER_INCLUDE_ID", False),
         tmp_dir=os.getenv("TMP_DIR", "/tmp/backups").strip(),
         log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
+        autostop_enabled=_bool("AUTOSTOP_ENABLED", False),
+        autostop_empty_hours=_int("AUTOSTOP_EMPTY_HOURS", 24, 1),
+        autostop_check_minutes=_int("AUTOSTOP_CHECK_MINUTES", 10, 1),
+        autostop_include=_list("AUTOSTOP_INCLUDE"),
+        autostop_exclude=_list("AUTOSTOP_EXCLUDE"),
+        autostop_host=os.getenv("AUTOSTOP_HOST", "").strip(),
+        autostop_dry_run=_bool("AUTOSTOP_DRY_RUN", False),
+        autostop_state_file=os.getenv("AUTOSTOP_STATE_FILE", "/data/autostop_state.json").strip(),
     )

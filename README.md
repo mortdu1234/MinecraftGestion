@@ -49,3 +49,20 @@ docker compose run --rm ptero-nc-backup python -m app.main --once --server Survi
 - La rotation n'a lieu qu'après un envoi vérifié (taille comparée) : un échec ne supprime jamais d'anciens backups.
 - Les fichiers de plus de `NC_CHUNK_THRESHOLD_MB` sont envoyés par morceaux (contourne les limites nginx/PHP/Cloudflare).
 - L'espace disque temporaire nécessaire = taille du plus gros backup (un seul serveur à la fois).
+
+## Arrêt automatique des serveurs vides
+
+Activé avec `AUTOSTOP_ENABLED=true`. Toutes les `AUTOSTOP_CHECK_MINUTES` minutes, chaque serveur **en marche** est pingé
+(Server List Ping Minecraft) pour connaître le nombre de joueurs :
+
+- **0 joueur** et pas de décompte en cours : un décompte de `AUTOSTOP_EMPTY_HOURS` heures démarre.
+- **Au moins 1 joueur** : le décompte est remis à zéro.
+- **Décompte écoulé** et serveur toujours vide : arrêt **propre** (signal `stop`).
+
+Le début du décompte est enregistré dans `/data/autostop_state.json` (volume Docker), il survit donc à un redémarrage du conteneur.
+
+Sécurités : aucun arrêt si le ping échoue (serveur non-Minecraft, port injoignable, `enable-status=false`),
+aucun arrêt pendant une sauvegarde, jamais de `kill`. Les serveurs arrêtés ne sont pas redémarrés automatiquement.
+
+Test sans risque : `AUTOSTOP_DRY_RUN=true`, puis
+`docker compose run --rm ptero-nc-backup python -m app.main --autostop`

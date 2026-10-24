@@ -59,6 +59,16 @@ class PterodactylClient:
             page += 1
         return servers
 
+    # ---------- Infos / alimentation ----------
+    def get_server(self, server_id: str) -> dict:
+        return self._req("GET", f"/servers/{server_id}").json()["attributes"]
+
+    def get_resources(self, server_id: str) -> dict:
+        return self._req("GET", f"/servers/{server_id}/resources").json()["attributes"]
+
+    def send_power(self, server_id: str, signal: str) -> None:
+        self._req("POST", f"/servers/{server_id}/power", json={"signal": signal})
+
     # ---------- Backups ----------
     def list_backups(self, server_id: str) -> list[dict]:
         out, page = [], 1

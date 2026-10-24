@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
 
-RUN useradd -r -u 1000 appuser && mkdir -p /tmp/backups && chown appuser /tmp/backups
+RUN useradd -r -u 1000 appuser && mkdir -p /tmp/backups /data && chown appuser /tmp/backups /data
 USER appuser
 
 CMD ["python", "-m", "app.main"]

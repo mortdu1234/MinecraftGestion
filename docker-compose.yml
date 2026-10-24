@@ -8,6 +8,9 @@ services:
     volumes:
       # Stockage temporaire : prévoir au moins la taille de ton plus gros backup
       - backup_tmp:/tmp/backups
+      # Décomptes de l'arrêt automatique (conservés entre les redémarrages)
+      - autostop_state:/data
 
 volumes:
   backup_tmp:
+  autostop_state:
