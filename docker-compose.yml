@@ -1,0 +1,13 @@
+services:
+  ptero-nc-backup:
+    build: .
+    container_name: ptero-nc-backup
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    volumes:
+      # Stockage temporaire : prévoir au moins la taille de ton plus gros backup
+      - backup_tmp:/tmp/backups
+
+volumes:
+  backup_tmp:
